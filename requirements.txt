@@ -1,0 +1,9 @@
+# API / LLM — aulas 1 e 2
+langchain-core>=1.0,<2.0
+langchain-groq>=1.0
+langchain-google-genai>=4.0
+langchain-mistralai>=1.0
+pydantic-settings>=2.6
+fastapi>=0.115
+uvicorn>=0.30
+langfuse>=3.0

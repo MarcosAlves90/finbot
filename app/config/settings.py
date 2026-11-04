@@ -1,0 +1,33 @@
+"""Configurações centralizadas; credenciais não aparecem na representação do objeto."""
+from typing import Literal
+from pydantic import SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+MODELOS_PADRAO = {
+    "groq": "openai/gpt-oss-120b",
+    "gemini": "gemini-2.5-flash",
+    "mistral": "mistral-small-latest",
+}
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    llm_provedor: Literal["groq", "gemini", "mistral"] = "groq"
+    llm_modelo: str | None = None
+    groq_api_key: SecretStr | None = None
+    gemini_api_key: SecretStr | None = None
+    mistral_api_key: SecretStr | None = None
+    langfuse_public_key: str | None = None
+    langfuse_secret_key: SecretStr | None = None
+    langfuse_host: str = "https://cloud.langfuse.com"
+    api_url: str = "http://127.0.0.1:8000"
+
+    @property
+    def modelo(self) -> str:
+        return self.llm_modelo or MODELOS_PADRAO[self.llm_provedor]
+
+    @property
+    def langfuse_ativo(self) -> bool:
+        return bool(self.langfuse_public_key and self.langfuse_secret_key and
+                    self.langfuse_secret_key.get_secret_value())
+
+settings = Settings()

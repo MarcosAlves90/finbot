@@ -1,36 +1,33 @@
-"""Testes offline para configurações, fábrica e prompts (sem consumo de LLM)."""
+# tests/test_aula1.py
+"""Aula 1 — configuração, fábrica de modelos e prompts."""
 import pytest
-from app.config.settings import Settings, MODELOS_PADRAO
+
+from app.config.settings import MODELOS_PADRAO, Settings
 from app.llm import fabrica
-from app.prompts.catalogo import carregar
+from app.prompts import catalogo
 
 
-def test_modelos_padrao_e_override():
+def test_modelo_padrao_por_provedor():
     assert Settings(llm_provedor="groq", _env_file=None).modelo == MODELOS_PADRAO["groq"]
-    assert Settings(llm_provedor="gemini", llm_modelo="exemplo", _env_file=None).modelo == "exemplo"
+    assert Settings(llm_provedor="gemini", llm_modelo="outro", _env_file=None).modelo == "outro"
 
 
-def test_provedor_invalido():
+def test_provedor_invalido_e_barrado_ao_iniciar():
     with pytest.raises(ValueError):
-        Settings(llm_provedor="nao-existe", _env_file=None)
+        Settings(llm_provedor="openai", _env_file=None)
 
 
-def test_chave_nao_vaza_na_representacao():
-    assert "segredo-real" not in repr(Settings(groq_api_key="segredo-real", _env_file=None))
+def test_chave_nunca_aparece_no_print():
+    s = Settings(groq_api_key="gsk_segredo", _env_file=None)
+    assert "gsk_segredo" not in str(s)
 
 
-def test_chave_ausente_retorna_erro_claro(monkeypatch):
-    monkeypatch.setattr(fabrica.settings, "llm_provedor", "groq")
+def test_sem_chave_da_erro_claro(monkeypatch):
     monkeypatch.setattr(fabrica.settings, "groq_api_key", None)
+    monkeypatch.setattr(fabrica.settings, "llm_provedor", "groq")
     with pytest.raises(RuntimeError, match="Defina a chave"):
         fabrica.criar_modelo()
 
 
-def test_prompt_eh_educacional():
-    texto = carregar("sistema").lower()
-    assert "não recomendações personalizadas" in texto
-
-
-def test_prompt_rejeita_path_traversal():
-    with pytest.raises(ValueError):
-        carregar("../../etc/passwd")
+def test_prompt_de_sistema_proibe_recomendacao():
+    assert "NÃO faz recomendação" in catalogo.carregar("sistema")

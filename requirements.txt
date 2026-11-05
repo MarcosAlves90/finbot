@@ -1,9 +1,12 @@
-# API / LLM — aulas 1 e 2
-langchain-core>=1.0,<2.0
+# Dependências da API (o Render instala este arquivo)
+# Aula 1 — LLM e configuração
+langchain-core>=1.0
 langchain-groq>=1.0
 langchain-google-genai>=4.0
 langchain-mistralai>=1.0
 pydantic-settings>=2.6
-fastapi>=0.115
-uvicorn>=0.30
-langfuse>=3.0
+
+# Aula 2 — API e observabilidade
+fastapi>=0.115       # framework para criar a API (rotas, validação, /docs)
+uvicorn>=0.30        # servidor que "liga" a API e atende os pedidos HTTP
+langfuse>=4.0        # registra cada conversa (traces) no painel do Langfuse

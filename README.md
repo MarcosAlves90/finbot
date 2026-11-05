@@ -1,40 +1,79 @@
-# FinBot — Aulas 1 e 2
+# FinBot
 
-Projeto educacional de chatbot para **explicar conceitos de investimentos no Brasil**. Não realiza recomendações de compra ou venda. Implementação desenvolvida para acompanhar a proposta das aulas 1 e 2 da disciplina.
+Assistente educacional para aprender conceitos sobre investimentos no Brasil. Este projeto está sendo desenvolvido passo a passo como parte das aulas.
+
+## Etapa atual
+
+- **Aula 1:** ambiente Python, configuração de modelos, prompts e chat pelo terminal.
+- **Aula 2:** API FastAPI, frontend Streamlit e observabilidade com Langfuse e configuração para posterior deploy no Render e Streamlit Community Cloud.
 
 ## Requisitos
 
-Python 3.12 ou superior, Git e uma chave de API da Groq, Gemini ou Mistral.
+- Python 3.12
+- Uma chave válida da Groq, Gemini ou Mistral
 
-## Configuração inicial
+## Configurar o ambiente
+
+Na raiz do projeto, ative o ambiente e instale as dependências:
 
 ```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
+python -m venv .venv
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# Linux/macOS: source .venv/bin/activate
 pip install -r requirements-dev.txt
-cp .env.example .env
 ```
 
-No Windows PowerShell, use `py -3.12 -m venv .venv`, `.venv\Scripts\Activate.ps1` e `Copy-Item .env.example .env`.
-Edite o `.env` com a chave de API correspondente ao provedor selecionado.
+Crie o arquivo `.env` a partir de `.env.example` e coloque sua chave em `GROQ_API_KEY` (ou configure o provedor escolhido em `LLM_PROVEDOR`). **Nunca publique o `.env` nem cole sua chave no README.**
 
-**Nunca publique `.env`, credenciais nem `.venv`.**
+## Como executar
 
-A documentação será complementada com o chat em terminal, a API e o frontend.
-
-## Aula 1 — chat no terminal
+Chat no terminal (Aula 1):
 
 ```bash
 python -m scripts.chat_terminal
 ```
 
-Digite `sair` para encerrar. O histórico existe apenas enquanto o processo permanece aberto.
+API (Aula 2):
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Documentação interativa: http://127.0.0.1:8000/docs
+
+Em outro terminal, com ambiente virtual ativo:
+
+```bash
+pip install -r frontend/requirements.txt
+streamlit run frontend/streamlit_app.py
+```
+
+Interface local: http://localhost:8501
 
 ## Testes
 
 ```bash
-pytest -q
+pytest -v
 ```
 
-Os testes automatizados são independentes das chamadas pagas ou gratuitas ao provedor.
-Veja também `docs/experimentos-aula-1.md` para os experimentos manuais previstos.
+Os testes substituem o modelo por uma implementação falsa para não consumir créditos nem depender do serviço externo. Para validar a resposta real, configure sua chave e teste `POST /chat` pelo Swagger ou pelo Streamlit.
+
+## Publicação
+
+A API usa o `render.yaml` para o Render; configure as variáveis de ambiente secretas diretamente na plataforma. O frontend é publicado no Streamlit Community Cloud apontando `API_URL` para o serviço do Render (em Secrets).
+
+## Links do projeto
+
+| O quê | Link |
+|---|---|
+| Chat publicado (Streamlit Cloud) | PENDENTE — preencher depois de publicar |
+| API publicada (Render) | PENDENTE — preencher depois de publicar |
+| Documentação da API | PENDENTE — preencher depois de publicar |
+
+## Segurança
+
+Este é um projeto educacional. Na Aula 2 o histórico fica temporariamente na memória da API e é identificado apenas por `sessao`, sem autenticação. Não envie informações pessoais ou confidenciais. O `.env` e `.venv/` são locais e estão no `.gitignore`.
+
+## Materiais das aulas
+
+A pasta `aulas/` é uma cópia integral e inalterada da pasta correspondente no ZIP original fornecido da professora, incluindo as imagens. O arquivo fornecido contém as aulas 1, 2 e 3; não contém os documentos das aulas 4 a 7.

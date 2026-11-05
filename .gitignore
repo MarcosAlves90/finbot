@@ -1,11 +1,19 @@
+# Credenciais — NUNCA versionar
 .env
+
+# Ambiente virtual
 .venv/
 venv/
+
+# Arquivos gerados pelo Python
 __pycache__/
-*.py[cod]
+*.pyc
 .pytest_cache/
-.coverage
+
+# Editores e sistema
 .vscode/
 .idea/
 .DS_Store
+
+# Segredos do Streamlit (local)
 .streamlit/secrets.toml

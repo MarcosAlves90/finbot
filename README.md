@@ -67,9 +67,9 @@ A API usa o `render.yaml` para o Render; configure as variáveis de ambiente sec
 | O quê | Link |
 |---|---|
 | Repositório GitHub | [MarcosAlves90/finbot](https://github.com/MarcosAlves90/finbot) |
-| Chat publicado (Streamlit Cloud) | PENDENTE — preencher depois de publicar |
-| API publicada (Render) | PENDENTE — preencher depois de publicar |
-| Documentação da API | PENDENTE — preencher depois de publicar |
+| Chat publicado (Streamlit Cloud) | [finbot-marcos.streamlit.app](https://finbot-marcos.streamlit.app/) |
+| API publicada (Render) | [finbot-api-i96n.onrender.com](https://finbot-api-i96n.onrender.com) |
+| Documentação da API (Swagger) | [Abrir documentação](https://finbot-api-i96n.onrender.com/docs) |
 
 ## Segurança
 

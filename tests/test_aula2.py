@@ -29,7 +29,7 @@ def test_chat_envia_o_historico_ao_modelo(api, falso):
 
 
 def test_janela_contexto_limita_llm_a_10_mensagens_sem_truncar_historico(api, falso, monkeypatch):
-    """Após a 7ª interação, a LLM recebe no máximo 10 mensagens anteriores; a sessão mantém tudo."""
+    """A LLM recebe no máximo 10 mensagens de conversa; a sessão mantém o histórico completo."""
     contextos = []
     invoke_original = falso.invoke
 
@@ -45,13 +45,15 @@ def test_janela_contexto_limita_llm_a_10_mensagens_sem_truncar_historico(api, fa
         resposta = api.post("/chat", json={"mensagem": pergunta, "sessao": sessao})
         assert resposta.status_code == 200
 
-    assert [len(contexto) for contexto in contextos] == [2, 4, 6, 8, 10, 12, 12, 12, 12, 12, 12, 12]
+    assert [len(contexto) for contexto in contextos] == [2, 4, 6, 8, 10, 11, 11, 11, 11, 11, 11, 11]
     textos_7 = [mensagem.content for mensagem in contextos[6]]
     assert perguntas[0] not in textos_7
-    assert perguntas[1] in textos_7
+    assert perguntas[1] not in textos_7
+    assert perguntas[2] in textos_7
     textos_12 = [mensagem.content for mensagem in contextos[11]]
     assert perguntas[5] not in textos_12
-    assert perguntas[6] in textos_12
+    assert perguntas[6] not in textos_12
+    assert perguntas[7] in textos_12
     assert perguntas[11] in textos_12
 
     historico = api.get(f"/sessoes/{sessao}/mensagens").json()

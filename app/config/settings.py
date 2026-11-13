@@ -40,6 +40,10 @@ class Settings(BaseSettings):
     # No computador é a API local; na nuvem, aponta para a API publicada no Render.
     api_url: str = "http://127.0.0.1:8000"
 
+    # MongoDB: credenciais somente em .env/ambiente, nunca no código.
+    mongo_url: str = "mongodb://localhost:27017"
+    mongo_banco: str = "finbot"
+
     @property
     def modelo(self) -> str:
         return self.llm_modelo or MODELOS_PADRAO[self.llm_provedor]

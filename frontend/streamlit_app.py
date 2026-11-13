@@ -44,7 +44,32 @@ st.caption("Chat educacional sobre investimentos — não é recomendação de i
 if "sessao" not in st.session_state:
     st.session_state.sessao = str(uuid.uuid4())[:8]
     st.session_state.mensagens = []
-usuario = "aluno1"  # fixo por enquanto; na Aula 3 o usuário poderá ser escolhido na tela
+
+with st.sidebar:
+    usuario = st.text_input("Seu usuário", value="aluno1")
+    with st.expander("Meu perfil"):
+        perfil = api("GET", f"/usuarios/{usuario}/perfil")
+        with st.form("perfil"):
+            nome = st.text_input("Nome", perfil.get("nome", ""))
+            objetivo = st.text_input("Objetivo", perfil.get("objetivo", ""))
+            niveis = ["", "iniciante", "intermediário", "avançado"]
+            atual = perfil.get("experiencia", "")
+            experiencia = st.selectbox("Experiência", niveis, index=niveis.index(atual) if atual in niveis else 0)
+            if st.form_submit_button("Salvar perfil"):
+                api("PUT", f"/usuarios/{usuario}/perfil", json={
+                    "nome": nome, "objetivo": objetivo, "experiencia": experiencia
+                })
+                st.success("Perfil salvo!")
+
+    if st.button("➕ Nova conversa", use_container_width=True):
+        st.session_state.sessao = str(uuid.uuid4())[:8]
+        st.session_state.mensagens = []
+
+    st.subheader("Conversas")
+    for conversa in api("GET", f"/usuarios/{usuario}/conversas"):
+        if st.button(conversa["titulo"], key=conversa["sessao"], use_container_width=True):
+            st.session_state.sessao = conversa["sessao"]
+            st.session_state.mensagens = api("GET", f"/sessoes/{conversa['sessao']}/mensagens")
 
 
 def mostrar(m: dict):

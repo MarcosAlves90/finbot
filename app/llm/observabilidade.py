@@ -55,3 +55,9 @@ def rastrear(sessao: str, usuario: str, nome: str = "chat"):
     # propagate_attributes "carimba" sessão, usuário e nome em todo trace criado dentro do bloco.
     with propagate_attributes(session_id=sessao, user_id=usuario, trace_name=nome):
         yield  # neste ponto roda o código que está dentro do "with rastrear(...)"
+
+
+def config_prompt(prompt) -> dict:
+    if getattr(prompt, "is_fallback", True):
+        return {}
+    return {"metadata": {"langfuse_prompt": prompt}}

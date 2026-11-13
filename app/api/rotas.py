@@ -2,7 +2,7 @@
 """Rotas (endpoints) da API. Cada função = um endereço + um método HTTP."""
 from fastapi import APIRouter
 
-from app.api.schemas import Mensagem, Pergunta, Resposta
+from app.api.schemas import Mensagem, Perfil, Pergunta, Resposta
 from app.config.settings import settings
 from app.servicos import chat
 
@@ -31,3 +31,18 @@ def perguntar(p: Pergunta):
 def mensagens(sessao: str):
     """Devolve o histórico de mensagens de uma sessão."""
     return chat.historico(sessao)
+
+
+@router.get("/usuarios/{usuario}/conversas")
+def conversas(usuario: str):
+    return chat.listar_conversas(usuario)
+
+
+@router.get("/usuarios/{usuario}/perfil")
+def ver_perfil(usuario: str):
+    return chat.obter_perfil(usuario)
+
+
+@router.put("/usuarios/{usuario}/perfil")
+def salvar_perfil(usuario: str, perfil: Perfil):
+    return chat.salvar_perfil(usuario, perfil.model_dump())

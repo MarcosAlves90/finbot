@@ -10,3 +10,8 @@ pydantic-settings>=2.6
 fastapi>=0.115       # framework para criar a API (rotas, validação, /docs)
 uvicorn>=0.30        # servidor que "liga" a API e atende os pedidos HTTP
 langfuse>=4.0        # registra cada conversa (traces) no painel do Langfuse
+
+# Aula 3 — memória (grafo + MongoDB)
+langgraph>=1.0
+langgraph-checkpoint-mongodb>=0.3
+pymongo>=4.10

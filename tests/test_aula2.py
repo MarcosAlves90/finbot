@@ -28,16 +28,23 @@ def test_chat_envia_o_historico_ao_modelo(api, falso):
     assert "Meu nome é Ana" in textos  # a 1ª pergunta foi junto na 2ª chamada
 
 
-def test_janela_contexto_limita_llm_a_10_mensagens_sem_truncar_historico(api, falso, monkeypatch):
+def test_janela_contexto_limita_llm_a_10_mensagens_sem_truncar_historico(api, monkeypatch):
     """A LLM recebe no máximo 10 mensagens de conversa; a sessão mantém o histórico completo."""
+    from langchain_core.messages import AIMessage
+    from app.llm import fabrica
+
     contextos = []
-    invoke_original = falso.invoke
 
-    def capturar_contexto(mensagens, config=None):
-        contextos.append(list(mensagens))
-        return invoke_original(mensagens, config)
+    class ModeloSemFerramentas:
+        def bind_tools(self, ferramentas):
+            return self
 
-    monkeypatch.setattr(falso, "invoke", capturar_contexto)
+        def invoke(self, mensagens, config=None):
+            contextos.append(list(mensagens))
+            return AIMessage(content="resposta de teste")
+
+    modelo = ModeloSemFerramentas()
+    monkeypatch.setattr(fabrica, "criar_modelo", lambda temperatura=0.3: modelo)
     sessao = "limite-contexto-10"
     perguntas = [f"pergunta interação {i}" for i in range(1, 13)]
 
@@ -45,14 +52,15 @@ def test_janela_contexto_limita_llm_a_10_mensagens_sem_truncar_historico(api, fa
         resposta = api.post("/chat", json={"mensagem": pergunta, "sessao": sessao})
         assert resposta.status_code == 200
 
-    assert [len(contexto) for contexto in contextos] == [2, 4, 6, 8, 10, 11, 11, 11, 11, 11, 11, 11]
+    assert [len(contexto) for contexto in contextos] == [2, 4, 6, 8, 10, 12, 12, 12, 12, 12, 12, 12]
     textos_7 = [mensagem.content for mensagem in contextos[6]]
     assert perguntas[0] not in textos_7
-    assert perguntas[1] not in textos_7
+    assert perguntas[1] in textos_7
     assert perguntas[2] in textos_7
+    assert perguntas[5] in textos_7
     textos_12 = [mensagem.content for mensagem in contextos[11]]
     assert perguntas[5] not in textos_12
-    assert perguntas[6] not in textos_12
+    assert perguntas[6] in textos_12
     assert perguntas[7] in textos_12
     assert perguntas[11] in textos_12
 

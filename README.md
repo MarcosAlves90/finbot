@@ -1,11 +1,13 @@
 # FinBot
 
-Assistente educacional para aprender conceitos sobre investimentos no Brasil. Este projeto está sendo desenvolvido passo a passo como parte das aulas.
+Assistente educacional para aprender conceitos sobre investimentos no Brasil e consultar dados de mercado em tempo real. Este projeto está sendo desenvolvido passo a passo como parte das aulas.
 
 ## Etapa atual
 
 - **Aula 1:** ambiente Python, configuração de modelos, prompts e chat pelo terminal.
 - **Aula 2:** API FastAPI, frontend Streamlit e observabilidade com Langfuse e configuração para posterior deploy no Render e Streamlit Community Cloud.
+- **Aula 3:** memória persistente por sessão no MongoDB e prompts versionados no Langfuse.
+- **Aula 4:** agente com ferramentas para consultar indicadores do Banco Central, cotações de ações, FIIs e Tesouro Direto; o token da brapi.dev é opcional.
 
 ## Requisitos
 
@@ -23,7 +25,7 @@ python -m venv .venv
 pip install -r requirements-dev.txt
 ```
 
-Crie o arquivo `.env` a partir de `.env.example` e coloque sua chave em `GROQ_API_KEY` (ou configure o provedor escolhido em `LLM_PROVEDOR`). **Nunca publique o `.env` nem cole sua chave no README.**
+Crie o arquivo `.env` a partir de `.env.example` e coloque sua chave em `GROQ_API_KEY` (ou configure o provedor escolhido em `LLM_PROVEDOR`). Para consultar ativos fora da lista gratuita da brapi.dev, preencha também `BRAPI_TOKEN` (opcional). **Nunca publique o `.env` nem cole suas chaves no README.**
 
 ## Como executar
 
@@ -50,17 +52,23 @@ streamlit run frontend/streamlit_app.py
 
 Interface local: http://localhost:8501
 
+Ferramentas de mercado (Aula 4; consulta APIs reais):
+
+```bash
+python -m app.tools.mercado
+```
+
 ## Testes
 
 ```bash
 pytest -v
 ```
 
-Os testes substituem o modelo por uma implementação falsa para não consumir créditos nem depender do serviço externo. Para validar a resposta real, configure sua chave e teste `POST /chat` pelo Swagger ou pelo Streamlit.
+Os testes substituem o modelo, o MongoDB e as APIs de mercado por implementações falsas; não consomem créditos nem dependem de serviços externos. Para validar respostas reais, configure as chaves e teste `POST /chat` pelo Swagger ou pelo Streamlit.
 
 ## Publicação
 
-A API usa o `render.yaml` para o Render; configure as variáveis de ambiente secretas diretamente na plataforma. O frontend é publicado no Streamlit Community Cloud apontando `API_URL` para o serviço do Render (em Secrets).
+A API usa o `render.yaml` para o Render; configure as variáveis de ambiente secretas diretamente na plataforma. Se usar `BRAPI_TOKEN`, cadastre-o como segredo no serviço `finbot-api`. O frontend é publicado no Streamlit Community Cloud apontando `API_URL` para o serviço do Render (em Secrets).
 
 ## Links do projeto
 
@@ -73,7 +81,7 @@ A API usa o `render.yaml` para o Render; configure as variáveis de ambiente sec
 
 ## Segurança
 
-Este é um projeto educacional. Na Aula 2 o histórico fica temporariamente na memória da API e é identificado apenas por `sessao`, sem autenticação. Não envie informações pessoais ou confidenciais. O `.env` e `.venv/` são locais e estão no `.gitignore`.
+Este é um projeto educacional. A API não tem autenticação; as conversas são identificadas por `sessao` e persistidas no MongoDB. Não envie informações pessoais ou confidenciais. O `.env` e `.venv/` são locais e estão no `.gitignore`.
 
 ## Materiais das aulas
 

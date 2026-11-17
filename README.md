@@ -77,4 +77,4 @@ Este é um projeto educacional. Na Aula 2 o histórico fica temporariamente na m
 
 ## Materiais das aulas
 
-A pasta `aulas/` é uma cópia integral e inalterada da pasta correspondente no ZIP original fornecido da professora, incluindo as imagens. O arquivo fornecido contém as aulas 1, 2 e 3; não contém os documentos das aulas 4 a 7.
+Os materiais das aulas 1–3 foram preservados como cópia integral e inalterada da pasta correspondente no ZIP original fornecido pela professora. A Aula 4 (`aulas/aula-04.md`) e suas imagens foram obtidas do repositório `profcintiapinho/chat_multiagente_inves`, no commit `4c2c2ce544b78151075cce4bb406704de4660e4f`. Não há materiais das aulas 5–7 no repositório consultado.
